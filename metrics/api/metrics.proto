@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "github.com/gbarnett/irrigation/metrics/api";
+
+package metrics;
+
+service Metrics {
+    rpc PostMetrics (PostMetricsRequest) returns (PostMetricsResponse) {}
+}
+
+message PostMetricsRequest {}
+
+message PostMetricsResponse {}
