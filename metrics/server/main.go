@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	api "github.com/gbarnett/irrigation/metrics/api"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 )
@@ -16,6 +18,16 @@ import (
 var (
     SERVER_PORT = flag.Int("server_port", 50051, "Server port")
     PROM_PORT = flag.Int("prom_port", 9100, "Prometheus port")
+
+    tempGauge = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "irrigation_temp_celsius_gauge",
+        Help: "Temperature gauge.",
+    })
+
+    soilMoistureGauge = promauto.NewCounter(prometheus.CounterOpts{
+        Name: "soil_moisture_gauge",
+        Help: "Soil moisture gauge.",
+    })
 )
 
 type MetricsServer struct {
@@ -23,7 +35,9 @@ type MetricsServer struct {
 }
 
 func (s *MetricsServer) PostMetrics(ctx context.Context, req *api.PostMetricsRequest) (*api.PostMetricsResponse, error) {
-    log.Printf("Received post metrics request.")
+    tempGauge.Add(float64(req.GetTempCelsius()))
+    soilMoistureGauge.Add(float64(req.GetSoilMoisture()))
+
     return &api.PostMetricsResponse{}, nil
 }
 

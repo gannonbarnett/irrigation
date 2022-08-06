@@ -8,6 +8,14 @@ service Metrics {
     rpc PostMetrics (PostMetricsRequest) returns (PostMetricsResponse) {}
 }
 
-message PostMetricsRequest {}
+message PostMetricsRequest {
+    string id = 1;
 
-message PostMetricsResponse {}
+    float temp_celsius = 4;
+
+    float soil_moisture = 5;  
+}
+
+message PostMetricsResponse {
+    bool water_seconds = 1;
+}
